@@ -16,6 +16,7 @@ var PdfViewerComponent = (function () {
         this._enhanceTextSelection = false;
         this._pageBorder = false;
         this._externalLinkTarget = 'blank';
+        this._srcLoaded = null;
         this.afterLoadComplete = new core_1.EventEmitter();
         this.pageChange = new core_1.EventEmitter(true);
         PDFJS.workerSrc = 'https://mozilla.github.io/pdf.js/build/pdf.worker.js';
@@ -174,8 +175,14 @@ var PdfViewerComponent = (function () {
         if (this._renderLink) {
             this._pdfLinkService.setViewer(this._pdfViewer);
         }
-        if (this.src) {
+        if (!this._pdf) {
             this.loadPDF();
+        } else {
+            this._pdfViewer.setDocument(this._pdf);
+            if (this._renderLink) {
+                this._pdfLinkService.setDocument(this._pdf, null);
+            }
+            this.update();
         }
     };
     PdfViewerComponent.prototype.ngOnChanges = function (changes) {
@@ -188,17 +195,20 @@ var PdfViewerComponent = (function () {
     };
     PdfViewerComponent.prototype.loadPDF = function () {
         var _this = this;
-        if (!this.src || !this._pdfViewer) {
+        if (!this.src || (this._srcLoaded && this.src === this._srcLoaded)) {
             return;
         }
+        this._srcLoaded = this.src;
         PDFJS.getDocument(this.src).then(function (pdf) {
             _this._pdf = pdf;
             _this.afterLoadComplete.emit(pdf);
-            _this._pdfViewer.setDocument(_this._pdf);
-            if (_this._renderLink) {
-                _this._pdfLinkService.setDocument(_this._pdf, null);
+            if (_this._pdfViewer) {
+                _this._pdfViewer.setDocument(_this._pdf);
+                if (_this._renderLink) {
+                    _this._pdfLinkService.setDocument(_this._pdf, null);
+                }
+                _this.update();
             }
-            _this.update();
         });
     };
     PdfViewerComponent.prototype.update = function () {
@@ -237,10 +247,10 @@ var PdfViewerComponent = (function () {
     PdfViewerComponent.CSS_UNITS = 96.0 / 72.0;
     PdfViewerComponent.decorators = [
         { type: core_1.Component, args: [{
-                    selector: 'pdf-viewer',
-                    template: "<div class=\"ng2-pdf-viewer-container\"><div id=\"viewer\" class=\"pdfViewer\"></div></div>",
-                    styles: ["\n.ng2-pdf-viewer--zoom {\n  overflow-x: scroll;\n}\n\n:host >>> .ng2-pdf-viewer-container > div {\n  position: relative;\n  z-index: 0;\n}\n\n:host >>> .textLayer {\n  font-family: sans-serif;\n  overflow: hidden;\n}\n  "]
-                },] },
+            selector: 'pdf-viewer',
+            template: "<div class=\"ng2-pdf-viewer-container\"><div id=\"viewer\" class=\"pdfViewer\"></div></div>",
+            styles: ["\n.ng2-pdf-viewer--zoom {\n  overflow-x: scroll;\n}\n\n:host >>> .ng2-pdf-viewer-container > div {\n  position: relative;\n  z-index: 0;\n}\n\n:host >>> .textLayer {\n  font-family: sans-serif;\n  overflow: hidden;\n}\n  "]
+        },] },
     ];
     PdfViewerComponent.ctorParameters = function () { return [
         { type: core_1.ElementRef, },

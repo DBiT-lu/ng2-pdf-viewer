@@ -15,7 +15,7 @@
           "arguments": [
             {
               "selector": "pdf-viewer",
-              "template": "<div class=\"ng2-pdf-viewer-container\" [ngClass]=\"{'ng2-pdf-viewer--zoom': zoom < 1}\"></div>",
+              "template": "<div class=\"ng2-pdf-viewer-container\" [ngClass]=\"{'ng2-pdf-viewer--zoom': zoom < 1}\"><div id=\"viewer\" class=\"pdfViewer\"></div></div>",
               "styles": [
                 "\n.ng2-pdf-viewer--zoom {\n  overflow-x: scroll;\n}\n\n:host >>> .ng2-pdf-viewer-container > div {\n  position: relative;\n  z-index: 0;\n}\n\n:host >>> .textLayer {\n  font-family: sans-serif;\n  overflow: hidden;\n}\n  "
               ]
@@ -223,6 +223,11 @@
                 ]
               }
             ]
+          }
+        ],
+        "ngOnInit": [
+          {
+            "__symbolic": "method"
           }
         ],
         "ngOnChanges": [
