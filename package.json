@@ -43,7 +43,7 @@
   },
   "dependencies": {
     "@types/pdf": "0.0.31",
-    "pdfjs-dist": "^1.7.244"
+    "pdfjs-dist": "^1.8.514"
   },
   "devDependencies": {
     "@angular/common": "^2.2.1",
